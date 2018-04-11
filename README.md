@@ -1,5 +1,7 @@
 
-# go-getting-started
+# FORKED FROM: go-getting-started
+
+"http://github.com/heroku/go-getting-started"
 
 A barebones Go app, which can easily be deployed to Heroku.
 
