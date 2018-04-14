@@ -1,29 +1,28 @@
-
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"log"
-	"os"
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
 )
 
-const BOT_ID="" // need to get once its registered with groupMe
+const BOT_ID = "" // need to get once its registered with groupMe
 
 // a generic interface so different structs can be passed
 // to the post function reguardless of their contents
 // this might not be needed idk
-type jsonBody interface{
-
+type jsonBody interface {
 }
 
 // json format sent from groupMe for each msg in the group
 type groupMe_message_post struct {
-	Group_id string// `json:"group_id"`		// the names have to capitalized to be 'exported'
-	Name string// `json:"name"`
-	Text string// `json:"text"`
+	Group_id string // `json:"group_id"`		// the names have to capitalized to be 'exported'
+	Name     string // `json:"name"`
+	Text     string // `json:"text"`
 }
 
 // what each message we send to group me will look like
@@ -34,41 +33,39 @@ type groupMe_message_send struct {
 // the json respone from hitting the translating service
 type translated_respone struct {
 	Status int64
-	Lang string
-	Text string[]
+	Lang   string
+	Text   []string
 }
 
 // the internal struct we can use to send data through the pipe
 // not to be sent/received via json
 type reply_data struct {
-
 }
-
 
 // sends post data to url with body converted to json
 func post(url string, body jsonBody) {
 	b := new(bytes.Buffer)
 	json.NewEncoder(b).Encode(body)
-	res, err := http.Post(url, "application/json; charset=utf-8", b)
-	if err != nil {
-		//log some error stuff
-	}
+	//res, err := http.Post(url, "application/json; charset=utf-8", b)
+	//if err != nil {
+	//log some error stuff
+	//}
 }
 
 // the thread the will synchronously get the translation and send it to the group
-func reply(pipe chan reply_data) {
-	data <- pipe
-	while (data.end != nil) {
-		// do stuff
-			// get data from translation endpoint
-			// send translation to groupMe room
+//func reply(pipe chan reply_data) {
+//var data <- pipe
+//for true {
+// do stuff
+// get data from translation endpoint
+// send translation to groupMe room
 
-		data <- pipe
-	}
-}
+//data <- pipe
+//}
+//}
 
 // groupMe api of what is posted to our server
-// { 
+// {
 // 	"attachments": [],
 // 	"avatar_url": "https://i.groupme.com/123456789",
 // 	"created_at": 1302623328,
@@ -83,14 +80,12 @@ func reply(pipe chan reply_data) {
 // 	"user_id": "1234567890"
 //   }
 
-
 func main() {
 	// create the channel
-	pipe := make(chan reply_data, 1) // not sure what the second param does
+	//pipe := make(chan reply_data, 1) // not sure what the second param does
 
 	// start the reply thread
-	go reply(pipe) // run the reply goroutine
-
+	//go reply(pipe) // run the reply goroutine
 
 	// needed for heroku, gets the port
 	port := os.Getenv("PORT")
@@ -99,10 +94,9 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-
 	// base get endpoint
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Team 2 says:<br/>Hello, you've requested: %s\n", r.URL.Path)
+		fmt.Fprintf(w, "Team 2 says:<br/>Hello, you've requested tacos: %s\n", r.URL.Path)
 	})
 
 	// our message endpoint, where groupMe send the post
@@ -113,7 +107,7 @@ func main() {
 			return
 		}
 		log.Println(string(body))
-		
+
 		var msg groupMe_message_post
 		err = json.Unmarshal(body, &msg) // parses the json from the body
 		if err != nil {
@@ -130,5 +124,5 @@ func main() {
 		fmt.Fprintf(w, msg.Text)
 	})
 
-	http.ListenAndServe(":" + port, nil)
+	http.ListenAndServe(":"+port, nil)
 }
