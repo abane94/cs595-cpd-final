@@ -27,7 +27,8 @@ type groupMe_message_post struct {
 
 // what each message we send to group me will look like
 type groupMe_message_send struct {
-	// todo
+	bot_id string
+	text   string
 }
 
 // the json respone from hitting the translating service
@@ -90,6 +91,9 @@ func main() {
 	// needed for heroku, gets the port
 	port := os.Getenv("PORT")
 
+	var groupMeMsg groupMe_message_send
+	groupMeMsg.bot_id = BOT_ID
+
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
@@ -120,8 +124,24 @@ func main() {
 		log.Println("LOG: msg.text :")
 		log.Println(msg.Text)
 
+		groupMeMsg.text = "Hello!"
+		payloadBytes, err := json.Marshal(groupMeMsg)
+		if err != nil {
+			// handle err
+		}
+		body2 := bytes.NewReader(payloadBytes)
+		req, err := http.NewRequest("POST", "https://api.groupme.com/v3/bots/post", body2)
+		if err != nil {
+			// handle err
+		}
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			// handle err
+		}
+		defer resp.Body.Close()
 		// sends response, not sure how groupMe will handle this
-		fmt.Fprintf(w, msg.Text)
+		//fmt.Fprintf(w, msg.Text)
 	})
 
 	http.ListenAndServe(":"+port, nil)
