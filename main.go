@@ -124,6 +124,13 @@ func main() {
 		log.Println("LOG: msg.text :")
 		log.Println(msg.Text)
 
+		resp, err := http.Post("https://api.groupme.com/v3/bots/post?bot_id="+BOT_ID+"&text=Hello+world", "", nil)
+		if err != nil {
+			// handle err
+		}
+		defer resp.Body.Close()
+
+		// try 2 for getting the bot to talk
 		groupMeMsg.text = "Hello!"
 		payloadBytes, err := json.Marshal(groupMeMsg)
 		if err != nil {
