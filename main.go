@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-const BOT_ID = "" // need to get once its registered with groupMe
+const BOT_ID = "c947489260df70ef469fc34ea8" // need to get once its registered with groupMe
 
 // a generic interface so different structs can be passed
 // to the post function reguardless of their contents
