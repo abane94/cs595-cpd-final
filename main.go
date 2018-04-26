@@ -36,7 +36,7 @@ type groupMe_message_send struct {
 type translated_respone struct {
 	Status int64
 	Lang   string
-	Text   []string
+	Text   string
 }
 
 // the internal struct we can use to send data through the pipe
@@ -125,30 +125,30 @@ func main() {
 		log.Println(msg.Text)
 
 		if strings.HasPrefix(msg.Text, "translate: ") {
-			var msgToTranslate string = msg.Text[11:len(msg.Text)]
+			var msgToTranslate = msg.Text[11:len(msg.Text)]
 			resp1, err1 := http.Post("https://translate.yandex.net/api/v1.5/tr.json/translate?"+
 				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de"+
 				"&text= "+msgToTranslate, "", nil)
 			if err1 != nil {
 				log.Fatal(err1)
 				return
-			} else {
-				// need to call this right after checking err else resource leak
-				defer resp1.Body.Close()
-				var translatedMsg translated_respone
-				err = json.Unmarshal(body, &translatedMsg)
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				var translatedMsgArr []string = translatedMsg.Text
-				resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?bot_id="+BOT_ID+"&text="+translatedMsgArr[0], "", nil)
-				if err2 != nil {
-					log.Fatal(err2)
-				}
-				defer resp2.Body.Close()
 			}
-
+			// need to call this right after checking err else resource leak
+			defer resp1.Body.Close()
+			var translationResponse translated_respone
+			err = json.Unmarshal(body, &translationResponse)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			var translatedMsg = translationResponse.Text
+			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
+				"bot_id="+BOT_ID+
+				"&text="+translatedMsg, "", nil)
+			if err2 != nil {
+				log.Fatal(err2)
+			}
+			defer resp2.Body.Close()
 		}
 
 		// try 2 for getting the bot to talk
