@@ -22,9 +22,9 @@ type jsonBody interface {
 
 // json format sent from groupMe for each msg in the group
 type groupMe_message_post struct {
-	Group_id string   // `json:"group_id"`		// the names have to capitalized to be 'exported'
-	Name     string   // `json:"name"`
-	Text     []string // `json:"text"`
+	Group_id string // `json:"group_id"`		// the names have to capitalized to be 'exported'
+	Name     string // `json:"name"`
+	Text     string // `json:"text"`
 }
 
 // what each message we send to group me will look like
@@ -125,12 +125,12 @@ func main() {
 		log.Println("LOG: msg.text :")
 		log.Println(msg.Text)
 
-		if strings.HasPrefix(msg.Text[0], "translate: ") {
-			var msgToTranslate = msg.Text[0][11:len(msg.Text[0])]
+		if strings.HasPrefix(msg.Text, "translate: ") {
+			var msgToTranslate = msg.Text[11:len(msg.Text)]
 			log.Println(msgToTranslate)
-			resp1, err1 := http.Post("https://translate.yandex.net/api/v1.5/tr.json/translate?"+
-				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de"+
-				"&text= "+msgToTranslate, "", nil)
+			resp1, err1 := http.Get("https://translate.yandex.net/api/v1.5/tr.json/translate?" +
+				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
+				"&text= " + msgToTranslate)
 			if err1 != nil {
 				log.Fatal(err1)
 				return
