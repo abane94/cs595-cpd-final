@@ -132,7 +132,9 @@ func main() {
 			// resp1, err1 := http.Get("https://translate.yandex.net/api/v1.5/tr.json/translate?" +
 			// 	"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
 			// 	"&text= " + msgToTranslate)
-			url := "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de&text= " + msgToTranslate
+			url := "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
+				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
+				"&text= " + msgToTranslate
 			client := http.Client{
 				Timeout: time.Second * 2, // Maximum of 2 secs
 			}
