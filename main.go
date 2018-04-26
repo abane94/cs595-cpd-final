@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-const BOT_ID = "c947489260df70ef469fc34ea8" // need to get once its registered with groupMe
+// groupme bot id used to get and post responses
+const BotID = "c947489260df70ef469fc34ea8"
 
 // a generic interface so different structs can be passed
 // to the post function reguardless of their contents
@@ -93,7 +94,7 @@ func main() {
 	port := os.Getenv("PORT")
 
 	var groupMeMsg groupMe_message_send
-	groupMeMsg.bot_id = BOT_ID
+	groupMeMsg.bot_id = BotID
 
 	if port == "" {
 		log.Fatal("$PORT must be set")
@@ -136,14 +137,16 @@ func main() {
 			// need to call this right after checking err else resource leak
 			defer resp1.Body.Close()
 			var translationResponse translated_respone
+			log.Println(translationResponse)
 			err = json.Unmarshal(body, &translationResponse)
 			if err != nil {
 				log.Println(err)
 				return
 			}
 			var translatedMsg = translationResponse.Text
+			log.Println(translatedMsg)
 			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
-				"bot_id="+BOT_ID+
+				"bot_id="+BotID+
 				"&text="+translatedMsg, "", nil)
 			if err2 != nil {
 				log.Fatal(err2)
