@@ -135,15 +135,15 @@ func main() {
 				log.Fatal(err1)
 				return
 			}
-			// need to call this right after checking err else resource leak
-			defer resp1.Body.Close()
+			decoder := json.NewDecoder(resp1.Body)
 			var translationResponse translated_respone
-			log.Println(translationResponse)
-			err = json.Unmarshal(body, &translationResponse)
+			err := decoder.Decode(&translationResponse)
 			if err != nil {
 				log.Println(err)
 				return
 			}
+			defer resp1.Body.Close()
+			log.Println(translationResponse)
 			var translatedMsg = translationResponse.Text
 			log.Println(translatedMsg)
 			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
