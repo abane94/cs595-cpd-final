@@ -118,7 +118,11 @@ func main() {
 		var msg groupMe_message_post
 		err = json.Unmarshal(body, &msg) // parses the json from the body
 		if err != nil {
-			log.Println(err)
+			log.Printf("error decoding sakura response: %v", err)
+			if e, ok := err.(*json.SyntaxError); ok {
+				log.Printf("syntax error at byte offset %d", e.Offset)
+			}
+			log.Printf("sakura response: %q", body)
 			return
 		}
 		// fmt.Fprintf(w, "Team 2 says:\nHello, you've requested: %s\n", r.URL.Path)
@@ -154,15 +158,15 @@ func main() {
 				log.Fatal(readErr)
 			}
 			log.Println("After reading in response from yandex")
-			var translationResponse translated_respone
-			jsonErr := json.Unmarshal(body, &translationResponse)
+			var jsonResponse translated_respone
+			jsonErr := json.Unmarshal(body, &jsonResponse)
 			if jsonErr != nil {
 				log.Println(jsonErr)
 				return
 			}
 			log.Println("json:")
-			log.Println(translationResponse)
-			var translatedMsg = translationResponse.Text
+			log.Println(jsonResponse)
+			var translatedMsg = jsonResponse.Text
 			log.Println(translatedMsg)
 			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
 				"bot_id="+BotID+
