@@ -118,11 +118,7 @@ func main() {
 		var msg groupMe_message_post
 		err = json.Unmarshal(body, &msg) // parses the json from the body
 		if err != nil {
-			log.Printf("error decoding sakura response: %v", err)
-			if e, ok := err.(*json.SyntaxError); ok {
-				log.Printf("syntax error at byte offset %d", e.Offset)
-			}
-			log.Printf("sakura response: %q", body)
+			log.Println(err)
 			return
 		}
 		// fmt.Fprintf(w, "Team 2 says:\nHello, you've requested: %s\n", r.URL.Path)
@@ -161,7 +157,11 @@ func main() {
 			var jsonResponse translated_respone
 			jsonErr := json.Unmarshal(body, &jsonResponse)
 			if jsonErr != nil {
-				log.Println(jsonErr)
+				log.Printf("error decoding yandex response: %v", err)
+				if e, ok := err.(*json.SyntaxError); ok {
+					log.Printf("yandex error at byte offset %d", e.Offset)
+				}
+				log.Printf("yandex response: %q", body)
 				return
 			}
 			log.Println("json:")
