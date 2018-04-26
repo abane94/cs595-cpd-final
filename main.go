@@ -38,7 +38,7 @@ type groupMe_message_send struct {
 type translated_respone struct {
 	Status int64
 	Lang   string
-	Text   string
+	Text   []string
 }
 
 // the internal struct we can use to send data through the pipe
@@ -153,18 +153,20 @@ func main() {
 			if readErr != nil {
 				log.Fatal(readErr)
 			}
+			log.Println("After reading in response from yandex")
 			var translationResponse translated_respone
 			jsonErr := json.Unmarshal(body, &translationResponse)
 			if jsonErr != nil {
 				log.Println(jsonErr)
 				return
 			}
+			log.Println("json:")
 			log.Println(translationResponse)
 			var translatedMsg = translationResponse.Text
 			log.Println(translatedMsg)
 			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
 				"bot_id="+BotID+
-				"&text="+translatedMsg, "", nil)
+				"&text="+translatedMsg[0], "", nil)
 			if err2 != nil {
 				log.Fatal(err2)
 			}
