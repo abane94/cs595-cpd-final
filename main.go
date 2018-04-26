@@ -135,6 +135,7 @@ func main() {
 				log.Fatal(err1)
 				return
 			}
+			log.Println("Sucessfully posted to yandex")
 			decoder := json.NewDecoder(resp1.Body)
 			var translationResponse translated_respone
 			err := decoder.Decode(&translationResponse)
