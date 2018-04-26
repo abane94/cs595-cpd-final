@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 // groupme bot id used to get and post responses
@@ -134,20 +135,30 @@ func main() {
 			url := "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
 				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
 				"&text= " + msgToTranslate
-			resp1, err1 := http.NewRequest("GET", url, nil)
+			client := http.Client{
+				Timeout: time.Second * 2, // Maximum of 2 secs
+			}
+			req, err := http.NewRequest("GET", url, nil)
+			if err != nil {
+				log.Fatal(err)
+				return
+			}
+			resp1, err1 := client.Do(req)
 			if err1 != nil {
 				log.Fatal(err1)
 				return
 			}
 			log.Println("Sucessfully posted to yandex")
-			decoder := json.NewDecoder(resp1.Body)
+			body, readErr := ioutil.ReadAll(resp1.Body)
+			if readErr != nil {
+				log.Fatal(readErr)
+			}
 			var translationResponse translated_respone
-			err := decoder.Decode(&translationResponse)
-			if err != nil {
-				log.Println(err)
+			jsonErr := json.Unmarshal(body, &translationResponse)
+			if jsonErr != nil {
+				log.Println(jsonErr)
 				return
 			}
-			defer resp1.Body.Close()
 			log.Println(translationResponse)
 			var translatedMsg = translationResponse.Text
 			log.Println(translatedMsg)
