@@ -128,9 +128,13 @@ func main() {
 		if strings.HasPrefix(msg.Text, "translate: ") {
 			var msgToTranslate = msg.Text[11:len(msg.Text)]
 			log.Println(msgToTranslate)
-			resp1, err1 := http.Get("https://translate.yandex.net/api/v1.5/tr.json/translate?" +
+			// resp1, err1 := http.Get("https://translate.yandex.net/api/v1.5/tr.json/translate?" +
+			// 	"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
+			// 	"&text= " + msgToTranslate)
+			url := "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
 				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
-				"&text= " + msgToTranslate)
+				"&text= " + msgToTranslate
+			resp1, err1 := http.NewRequest("GET", url, nil)
 			if err1 != nil {
 				log.Fatal(err1)
 				return
