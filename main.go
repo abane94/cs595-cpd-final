@@ -168,16 +168,10 @@ func main() {
 			log.Println(jsonResponse)
 			var translatedMsg = jsonResponse.Text
 			log.Println(translatedMsg)
-			resp3, err3 := http.Post("https://api.groupme.com/v3/bots/post?"+
-				"bot_id="+BotID+
-				"&text=bacon", "", nil)
-			if err3 != nil {
-				log.Fatal(err3)
-			}
-			defer resp3.Body.Close()
+			var singleTranslatedMsg = strings.Replace(translatedMsg[0], " ", "%20", -1)
 			resp2, err2 := http.Post("https://api.groupme.com/v3/bots/post?"+
 				"bot_id="+BotID+
-				"&text="+translatedMsg[0], "", nil)
+				"&text="+singleTranslatedMsg, "", nil)
 			if err2 != nil {
 				log.Fatal(err2)
 			}
