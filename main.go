@@ -36,9 +36,9 @@ type groupMe_message_send struct {
 
 // the json respone from hitting the translating service
 type translated_respone struct {
-	Status int64
-	Lang   string
-	Text   []string
+	Code int64
+	Lang string
+	Text []string
 }
 
 // the internal struct we can use to send data through the pipe
