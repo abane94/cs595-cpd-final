@@ -121,7 +121,6 @@ func main() {
 			log.Println(err)
 			return
 		}
-		// fmt.Fprintf(w, "Team 2 says:\nHello, you've requested: %s\n", r.URL.Path)
 		log.Println(msg)
 		log.Println("LOG: msg.text :")
 		log.Println(msg.Text)
@@ -130,9 +129,6 @@ func main() {
 			var msgToTranslate = msg.Text[11:len(msg.Text)]
 			msgToTranslate = strings.Replace(msgToTranslate, " ", "%20", -1)
 			log.Println(msgToTranslate)
-			// resp1, err1 := http.Get("https://translate.yandex.net/api/v1.5/tr.json/translate?" +
-			// 	"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
-			// 	"&text= " + msgToTranslate)
 			url := "https://translate.yandex.net/api/v1.5/tr.json/translate?" +
 				"key=trnsl.1.1.20180404T152827Z.de1604f76f1d895c.8909d7acdac0907096f9a3cac7ecd33db02e0650&lang=en-de" +
 				"&text=%20" + msgToTranslate
@@ -178,26 +174,6 @@ func main() {
 			}
 			defer resp2.Body.Close()
 		}
-
-		// try 2 for getting the bot to talk
-		// groupMeMsg.text = "Hello!"
-		// payloadBytes, err := json.Marshal(groupMeMsg)
-		// if err != nil {
-		// 	// handle err
-		// }
-		// body2 := bytes.NewReader(payloadBytes)
-		// req, err := http.NewRequest("POST", "https://api.groupme.com/v3/bots/post", body2)
-		// if err != nil {
-		// 	// handle err
-		// }
-		// req.Header.Set("Content-Type", "application/json")
-		// resp, err := http.DefaultClient.Do(req)
-		// if err != nil {
-		// 	// handle err
-		// }
-		// defer resp.Body.Close()
-		// sends response, not sure how groupMe will handle this
-		//fmt.Fprintf(w, msg.Text)
 	})
 
 	http.ListenAndServe(":"+port, nil)
